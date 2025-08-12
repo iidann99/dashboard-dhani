@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring Kandang Ayam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d4a7a 0%, #1e3c72 100%);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .chicken-logo {
+            width: 80px;
+            height: 80px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            position: relative;
+        }
+
+        .chicken-emoji {
+            font-size: 60px;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: #a0c4ff;
+        }
+
+        .current-time {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(30, 60, 114, 0.8);
+            border: 2px solid #4a6fa5;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #a0c4ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .kandangku-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        /* Bottom Cards */
+        .bottom-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-card {
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .light-card {
+            background: linear-gradient(135deg, #ff9500 0%, #ffb347 100%);
+        }
+
+        .elevation-card {
+            background: linear-gradient(135deg, #2d4a7a 0%, #1e3c72 100%);
+            border: 2px solid #4a6fa5;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-icon {
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .card-status {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* Temperature Section */
+        .temp-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .temp-label {
+            font-size: 16px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .temp-value {
+            font-size: 64px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .temp-recommendation {
+            background: rgba(46, 125, 50, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        /* Chart */
+        .chart-container {
+            background: rgba(30, 60, 114, 0.8);
+            border: 2px solid #4a6fa5;
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .chart-area {
+            height: 120px;
+            background: linear-gradient(to bottom, rgba(255,215,0,0.3) 0%, rgba(100,149,237,0.3) 50%, rgba(255,20,147,0.3) 100%);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ffd700;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(30, 60, 114, 0.8);
+            border: 2px solid #4a6fa5;
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .control-item {
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kipas {
+            background: linear-gradient(135deg, #ff5722 0%, #ff1744 100%);
+        }
+
+        .pompa {
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+        }
+
+        .pakan {
+            background: linear-gradient(135deg, #ff9500 0%, #f57c00 100%);
+        }
+
+        .control-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-icon {
+            font-size: 16px;
+        }
+
+        .control-name {
+            font-weight: bold;
+        }
+
+        .control-status {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .control-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff4444;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .bottom-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .temp-value {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <!-- Header -->
+            <div class="header">
+                <div class="chicken-logo">
+                    <span class="chicken-emoji">🐔</span>
+                </div>
+                <div class="header-content">
+                    <div class="header-title">DASHBOARD MONITORING KANDANG AYAM</div>
+                    <div class="header-subtitle">Selamat Datang! <span style="color: #4fc3f7;">Ayam Sehat, Telurpun Lezat!</span></div>
+                </div>
+                <div class="current-time" id="currentTime">13:41:30</div>
+            </div>
+
+            <!-- Stats Section -->
+            <div>
+                <div class="kandangku-title">Kandangku</div>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">🐔</div>
+                        <div class="stat-label">Jumlah Ayam</div>
+                        <div class="stat-value">3200 ekor</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🥘</div>
+                        <div class="stat-label">Jumlah Pakan</div>
+                        <div class="stat-value">510 Kg</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💧</div>
+                        <div class="stat-label">Air Minum</div>
+                        <div class="stat-value">180 L</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Cards -->
+            <div class="bottom-cards">
+                <div class="info-card light-card">
+                    <div class="card-header">
+                        <span class="card-icon">💡</span>
+                        <span class="card-title">Intensitas Cahaya</span>
+                    </div>
+                    <div class="card-status">Status Lampu: <strong>MENYALA</strong> ⚙</div>
+                    <div class="card-value">48699 Lux</div>
+                </div>
+                <div class="info-card elevation-card">
+                    <div class="card-header">
+                        <span class="card-icon">🏔</span>
+                        <span class="card-title">Ketinggian Lokasi</span>
+                    </div>
+                    <div class="card-status">Dari permukaan laut</div>
+                    <div class="card-value">452.8 mdpl</div>
+                </div>
+            </div>
+
+            <!-- Temperature Section -->
+            <div class="temp-section">
+                <div class="temp-label">🌡 Suhu Kandang</div>
+                <div class="temp-label">Status: <span style="color: #4caf50; font-weight: bold;">IDEAL</span></div>
+                <div class="temp-value">27.6°C</div>
+                <div class="temp-recommendation">Rekomendasi: 24-30°C untuk ayam petelur</div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <!-- Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <span>📊</span>
+                    <span class="chart-title">Grafik Suhu & Kelembapan</span>
+                </div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffd700;"></div>
+                        <span>Suhu (°C)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #64b5f6;"></div>
+                        <span>Kelembapan (%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff1744;"></div>
+                        <span>Tekanan (hPa)</span>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-line"></div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="control-title">Kontrol Peralatan</div>
+                
+                <div class="control-item kipas">
+                    <div class="control-info">
+                        <span class="control-icon">🌪</span>
+                        <div>
+                            <div class="control-name">Kipas</div>
+                            <div class="control-status">Status: ⭕ Mati <span class="status-dot"></span></div>
+                        </div>
+                    </div>
+                    <button class="control-button">
+                        <span>🔴</span> Nyalakan
+                    </button>
+                </div>
+
+                <div class="control-item pompa">
+                    <div class="control-info">
+                        <span class="control-icon">💧</span>
+                        <div>
+                            <div class="control-name">Pompa</div>
+                            <div class="control-status">Status: ⭕ Mati <span class="status-dot"></span></div>
+                        </div>
+                    </div>
+                    <button class="control-button">
+                        <span>🔴</span> Nyalakan
+                    </button>
+                </div>
+
+                <div class="control-item pakan">
+                    <div class="control-info">
+                        <span class="control-icon">🍽</span>
+                        <div>
+                            <div class="control-name">Pakan</div>
+                            <div class="control-status">Status: ⭕ Mati <span class="status-dot"></span></div>
+                        </div>
+                    </div>
+                    <button class="control-button">
+                        <span>🔴</span> Nyalakan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update time every second
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // Update time initially and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Control button functionality
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const isOn = this.textContent.includes('Matikan');
+                const controlItem = this.closest('.control-item');
+                const statusElement = controlItem.querySelector('.control-status');
+                const statusDot = controlItem.querySelector('.status-dot');
+                
+                if (isOn) {
+                    this.innerHTML = '<span>🔴</span> Nyalakan';
+                    statusElement.innerHTML = 'Status: ⭕ Mati <span class="status-dot"></span>';
+                    statusDot.style.background = '#ff4444';
+                } else {
+                    this.innerHTML = '<span>🔴</span> Matikan';
+                    statusElement.innerHTML = 'Status: ✅ Hidup <span class="status-dot"></span>';
+                    statusDot.style.background = '#4caf50';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
